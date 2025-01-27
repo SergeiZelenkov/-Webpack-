@@ -1,37 +1,52 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('node:path');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-   mode: 'production',
-   entry: './src/index.js',
-   output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'app.bundle.js',
-      clean: true
-   },
-   module: {
-      rules: [
-         {
-            test: /\.html$/i,
-            use: ["html-loader"]
-         },
-         {
-            test: /\.css$/i,
-            use: [
-               MiniCssExtractPlugin.loader,
-               "css-loader"
-            ]
-         }
-      ]
-   },
-   plugins: [
-      new HtmlWebpackPlugin({
-         template: './src/index.html',
-         filename: 'index.html'
-      }),
-      new MiniCssExtractPlugin({
-         filename: 'style.css'
-      })
-   ]
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'app.bundle.js',
+    clean: true
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+          },
+        ],
+      },
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+      }
+    ],
+  },
+  plugins: [
+    new HtmlWebPackPlugin({
+      template: './src/index.html',
+      filename: './index.html',
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'style.css'
+   })
+  ],
+  mode: 'production'
 };
